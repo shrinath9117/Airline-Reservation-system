@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e3ebf2;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navigation Bar Styles */
+        .navbar {
+            background-color: #0b2748;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+        .navbar ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+        .navbar ul li {
+            margin: 0 15px;
+        }
+        .navbar ul li a {
+            text-decoration: none;
+            color: white;
+            font-size: 15px;
+            padding: 8px 12px;
+            transition: background 0.3s ease-in-out;
+        }
+        .navbar ul li a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+        }
+
+        .header {
+            background-color: #0b2748;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 60px;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+        .menu {
+            position: relative;
+            display: inline-block;
+            margin-right: 30px;
+        }
+        .menu button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            font-weight: bold;
+            padding: 10px 15px;
+        }
+        .menu-content {
+            display: none;
+            position: absolute;
+            min-width: 200px;
+            z-index: 1;
+            border-radius: 5px;
+            right: 0;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.5s ease-in-out, transform 0.3s ease-in-out;
+            backdrop-filter: blur(10px);
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        .menu:hover .menu-content {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .menu-content a {
+            color: #e6e8eb;
+            padding: 12px 15px;
+            display: block;
+            text-decoration: none;
+            font-size: 1.1em;
+            font-weight: 500;
+            transition: transform 0.3s ease-in-out;
+            text-align: left;
+        }
+        .menu-content a:hover {
+            color: #0073e6;
+            font-weight: bold;
+            transform: scale(1.05);
+        }
+
+        .container {
+            width: 90%;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .search-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            background: #0b2748;
+            padding: 20px;
+            border-radius: 5px;
+            align-items: center;
+        }
+        .search-box label {
+            display: flex;
+            flex-direction: column;
+            color: white;
+            font-size: 14px;
+            width: 20%;
+            position: relative;
+        }
+        .search-box select,
+        .search-box input {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 3px;
+            background: white;
+            color: black;
+            margin-top: 5px;
+            width: 80%;
+        }
+        .search-box button {
+            padding: 10px 18px;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            border: none;
+            border-radius: 3px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            width: 20%;
+        }
+
+        .passenger-box {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .small-input {
+            width: 50px;
+            padding: 5px;
+            text-align: center;
+            border: none;
+            border-radius: 3px;
+        }
+
+        /* Flight Results Styles */
+        #searchResults {
+            margin-top: 30px;
+        }
+
+        .flight-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .flight-info {
+            flex: 2;
+        }
+
+        .flight-time {
+            flex: 1;
+            text-align: center;
+        }
+
+        .flight-price {
+            flex: 1;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #0b2748;
+        }
+
+        .flight-action {
+            flex: 1;
+            text-align: right;
+        }
+
+        .view-btn {
+            padding: 8px 20px;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .view-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Loading Animation */
+        .loading-container {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .airplane-animation {
+            width: 200px;
+            height: 100px;
+            margin: 0 auto 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .airplane {
+            width: 60px;
+            position: absolute;
+            left: -60px;
+            top: 40px;
+            animation: airplaneFly 6s linear;
+        }
+        
+        @keyframes airplaneFly {
+            0% { left: -60px; transform: rotate(0deg); }
+            30% { transform: rotate(5deg); }
+            70% { transform: rotate(-3deg); }
+            100% { left: calc(100% + 60px); transform: rotate(0deg); }
+        }
+        
+        .loading-text {
+            font-size: 1.2em;
+            color: #0b2748;
+            margin-top: 20px;
+        }
+        
+        .cloud {
+            position: absolute;
+            opacity: 0.7;
+        }
+        
+        .cloud1 { top: 10px; left: 20%; width: 40px; animation: cloudMove 15s linear infinite; }
+        .cloud2 { top: 30px; left: 50%; width: 30px; animation: cloudMove 12s linear infinite 2s; }
+        .cloud3 { top: 20px; left: 80%; width: 50px; animation: cloudMove 18s linear infinite 1s; }
+        
+        @keyframes cloudMove {
+            from { transform: translateX(100px); }
+            to { transform: translateX(-200px); }
+        }
+
+        .error {
+            color: #e74c3c;
+            padding: 15px;
+            background: #fde8e8;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .airline-logo {
+            width: 40px;
+            height: 40px;
+            margin-right: 15px;
+            object-fit: contain;
+        }
+
+        .flight-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .city-suggestions {
+            position: absolute;
+            background: rgb(20, 19, 19);
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            width: calc(80% - 24px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 0 0 4px 4px;
+            margin-top: 2px;
+        }
+        
+        .city-suggestions div {
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .city-suggestions div:hover {
+            background-color: #847712;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="logo">✈️ Airline System</div>
+        <div class="menu">
+            <button>=</button>
+            <div class="menu-content">
+                <a href="home.html">🏠 Home</a>
+                <a href="flights.html">✈️ Flights Book</a>
+                <a href="about.html">ℹ️ About</a>
+                <a href="services.html">💼 Services</a>
+                <a href="offers.html">🔥 Offers</a>
+                <a href="contact.html">📞 Contact</a>
+                <hr style="margin: 5px 0; border-color: #666;">
+                <a href="login.html">🔐 Login</a>
+                <a href="register.html">📝 Register</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="header">Airline Tickets, Airlines in India</div>
+    
+    <div class="container">
+        <div class="search-box">
+            <label>Trip Type:
+                <select id="tripType">
+                    <option>One Way</option>
+                    <option>Round Trip</option>
+                </select>
+            </label>
+            <label>From:
+                <input type="text" id="from" placeholder="Enter Departure City" onkeyup="showSuggestions(this, 'fromSuggestions')">
+                <div id="fromSuggestions" class="city-suggestions"></div>
+            </label>
+            <label>To:
+                <input type="text" id="to" placeholder="Enter Destination City" onkeyup="showSuggestions(this, 'toSuggestions')">
+                <div id="toSuggestions" class="city-suggestions"></div>
+            </label>
+            <label>Depart:
+                <input type="date" id="departDate">
+            </label>
+            <label>Return Date:
+                <input type="date" id="returnDate">
+            </label>
+            <label>Passengers:
+                <div class="passenger-box">
+                    <label>Children:
+                        <input type="number" id="children" min="0" max="10" value="0" class="small-input">
+                    </label>
+                    <label>Old:
+                        <input type="number" id="old" min="0" max="10" value="0" class="small-input">
+                    </label>
+                    <label>Young:
+                        <input type="number" id="young" min="1" max="10" value="1" class="small-input">
+                    </label>
+                </div>
+            </label>
+            <label>Class:
+                <select id="class">
+                    <option value="economy">Economy</option>
+                    <option value="business">Business</option>
+                    <option value="first">First Class</option>
+                </select>
+            </label>
+            <button onclick="searchFlights()">Search</button>
+        </div>
+        <div id="searchResults"></div>
+    </div>
+
+    <script>
+        const cities = [
+            "New Delhi", "Mumbai", "Bangalore", "Chennai", "Hyderabad", "Kolkata", 
+            "Ahmedabad", "Pune", "Jaipur", "Surat", "Lucknow", "Patna", "Indore"
+        ];
+
+        // Current flights data
+        let currentFlights = [];
+        let currentFrom = '';
+        let currentTo = '';
+        let currentDate = '';
+        let currentClass = '';
+        let currentPassengers = {
+            children: 0,
+            adults: 0,
+            young: 0
+        };
+
+        // Fixed airline logos (using working URLs)
+        const mockAirlines = [
+            { 
+                name: "Air India", 
+                code: "AI", 
+                logo: "https://www.airindia.com/content/dam/airindia/logos/airindia-logo.png"
+            },
+            { 
+                name: "IndiGo", 
+                code: "6E", 
+                logo: "https://www.goindigo.in/content/dam/indigov2/6e-footer-logo.svg"
+            },
+            { 
+                name: "SpiceJet", 
+                code: "SG", 
+                logo: "https://www.spicejet.com/static/theme/images/logo.png"
+            },
+            { 
+                name: "Vistara", 
+                code: "UK", 
+                logo: "https://www.airvistara.com/optimized-images/logo.png"
+            }
+        ];
+
+        function showSuggestions(input, suggestionBoxId) {
+            let suggestionBox = document.getElementById(suggestionBoxId);
+            suggestionBox.innerHTML = "";
+            
+            if (input.value.length > 0) {
+                const inputValue = input.value.toLowerCase();
+                const filteredCities = cities.filter(city => 
+                    city.toLowerCase().includes(inputValue)
+                );
+                
+                if (filteredCities.length > 0) {
+                    filteredCities.forEach(city => {
+                        let div = document.createElement("div");
+                        div.innerHTML = city;
+                        div.onclick = function() {
+                            input.value = city;
+                            suggestionBox.innerHTML = "";
+                        };
+                        suggestionBox.appendChild(div);
+                    });
+                } else {
+                    let div = document.createElement("div");
+                    div.innerHTML = "No cities found";
+                    div.style.color = "#999";
+                    div.style.cursor = "default";
+                    suggestionBox.appendChild(div);
+                }
+            } else {
+                suggestionBox.innerHTML = "";
+            }
+        }
+
+        // Close suggestions when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.matches('#from, #to')) {
+                document.getElementById('fromSuggestions').innerHTML = '';
+                document.getElementById('toSuggestions').innerHTML = '';
+            }
+        });
+
+        async function searchFlights() {
+            const tripType = document.getElementById("tripType").value;
+            const from = document.getElementById("from").value;
+            const to = document.getElementById("to").value;
+            const departDate = document.getElementById("departDate").value;
+            const returnDate = document.getElementById("returnDate").value;
+            const passengers = {
+                children: parseInt(document.getElementById("children").value),
+                adults: parseInt(document.getElementById("old").value),
+                young: parseInt(document.getElementById("young").value)
+            };
+            const travelClass = document.getElementById("class").value;
+
+            if (!from || !to || !departDate) {
+                alert("Please enter departure, destination, and date");
+                return;
+            }
+
+            // Store current passengers
+            currentPassengers = passengers;
+
+            try {
+                // Show loading animation
+                document.getElementById("searchResults").innerHTML = `
+                    <div class="loading-container">
+                        <div class="airplane-animation">
+                            <img src="" class="airplane" alt="Airplane">
+                            <img src="https://cdn-icons-png.flaticon.com/512/414/414927.png" class="cloud cloud1" alt="Cloud">
+                            <img src="https://cdn-icons-png.flaticon.com/512/414/414927.png" class="cloud cloud2" alt="Cloud">
+                            <img src="https://cdn-icons-png.flaticon.com/512/414/414927.png" class="cloud cloud3" alt="Cloud">
+                        </div>
+                        <p class="loading-text">Searching for the best flights...</p>
+                    </div>
+                `;
+
+                // Get IATA codes for cities
+                const fromIata = getIataCode(from);
+                const toIata = getIataCode(to);
+                
+                // For demo purposes, we'll use mock data after 6 seconds
+                setTimeout(() => {
+                    let flights = generateMockFlights(fromIata, toIata, departDate);
+                    
+                    // Store current search parameters
+                    currentFlights = flights;
+                    currentFrom = from;
+                    currentTo = to;
+                    currentDate = departDate;
+                    currentClass = travelClass;
+                    
+                    // Display results
+                    displayFlights(flights, from, to, departDate, travelClass);
+                }, 6000);
+                
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById("searchResults").innerHTML = `
+                    <div class="error">
+                        <p>Error loading flights. Showing sample data instead.</p>
+                    </div>
+                `;
+                // Display mock data if API fails
+                displayMockFlights(from, to, departDate, travelClass);
+            }
+        }
+
+        function generateMockFlights(fromIata, toIata, date) {
+            // Generate some realistic-looking mock flight data
+            const flights = [];
+            const times = ["08:00", "10:30", "13:15", "15:45", "18:20", "21:00"];
+            
+            times.forEach((time, index) => {
+                const airline = mockAirlines[index % mockAirlines.length];
+                const flightNumber = `${airline.code}${Math.floor(100 + Math.random() * 900)}`;
+                const price = Math.floor(3000 + Math.random() * 10000);
+                
+                flights.push({
+                    airline: {
+                        name: airline.name,
+                        logo: airline.logo
+                    },
+                    flight: {
+                        iata: flightNumber
+                    },
+                    departure: {
+                        airport: `${fromIata} Airport`,
+                        scheduled: `${date}T${time}`,
+                        terminal: Math.floor(1 + Math.random() * 3)
+                    },
+                    arrival: {
+                        airport: `${toIata} Airport`,
+                        scheduled: calculateArrivalTime(date, time, 1.5 + Math.random() * 3),
+                        terminal: Math.floor(1 + Math.random() * 3)
+                    },
+                    price: price,
+                    duration: `${Math.floor(1 + Math.random() * 3)}h ${Math.floor(Math.random() * 60)}m`,
+                    seats_available: Math.floor(10 + Math.random() * 100)
+                });
+            });
+            
+            return flights;
+        }
+
+        function calculateArrivalTime(date, depTime, hours) {
+            const [year, month, day] = date.split('-');
+            const [hoursDep, minutes] = depTime.split(':');
+            
+            const depDate = new Date(year, month-1, day, hoursDep, minutes);
+            const arrDate = new Date(depDate.getTime() + hours * 60 * 60 * 1000);
+            
+            return arrDate.toISOString();
+        }
+
+        function calculateDuration(depISO, arrISO) {
+            const dep = new Date(depISO);
+            const arr = new Date(arrISO);
+            const diff = arr - dep;
+            
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            
+            return `${hours}h ${minutes}m`;
+        }
+
+        function displayFlights(flights, from, to, date, travelClass) {
+            const resultsDiv = document.getElementById("searchResults");
+            
+            if (!flights || flights.length === 0) {
+                resultsDiv.innerHTML = `
+                    <div class="error">
+                        <p>No flights found from ${from} to ${to} on ${date}.</p>
+                        <p>Please try different dates or cities.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = `
+                <h3 style="color: #0b2748; margin-bottom: 20px;">Flights from ${from} to ${to} on ${date}</h3>
+            `;
+            
+            flights.forEach(flight => {
+                const depTime = formatTime(flight.departure.scheduled);
+                const arrTime = formatTime(flight.arrival.scheduled);
+                const duration = calculateDuration(flight.departure.scheduled, flight.arrival.scheduled);
+                
+                html += `
+                    <div class="flight-card">
+                        <div class="flight-info">
+                            <div class="flight-header">
+                                <img src="${flight.airline.logo}" alt="${flight.airline.name}" class="airline-logo" onerror="this.src='https://via.placeholder.com/40?text=${flight.airline.code}'">
+                                <div>
+                                    <h4>${flight.airline.name}</h4>
+                                    <p>${flight.flight.iata} • ${travelClass.charAt(0).toUpperCase() + travelClass.slice(1)}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flight-time">
+                            <div><strong>${depTime}</strong></div>
+                            <div>${flight.departure.airport}</div>
+                            <div>Terminal ${flight.departure.terminal}</div>
+                        </div>
+                        <div class="flight-time">
+                            <div style="font-size: 0.9em;">${duration}</div>
+                            <div style="font-size: 2em;">→</div>
+                        </div>
+                        <div class="flight-time">
+                            <div><strong>${arrTime}</strong></div>
+                            <div>${flight.arrival.airport}</div>
+                            <div>Terminal ${flight.arrival.terminal}</div>
+                        </div>
+                        <div class="flight-price">
+                            ₹${flight.price}
+                        </div>
+                        <div class="flight-action">
+                            <button class="view-btn" onclick="redirectToDetails(
+                                '${flight.flight.iata}',
+                                ${flight.price},
+                                '${encodeURIComponent(flight.airline.name)}',
+                                '${encodeURIComponent(flight.airline.logo)}',
+                                '${depTime}',
+                                '${arrTime}',
+                                '${duration}',
+                                '${encodeURIComponent(currentFrom)}',
+                                '${encodeURIComponent(currentTo)}',
+                                '${currentDate}',
+                                '${currentClass}'
+                            )">View Details</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            resultsDiv.innerHTML = html;
+        }
+
+        function displayMockFlights(from, to, date, travelClass) {
+            const fromIata = getIataCode(from);
+            const toIata = getIataCode(to);
+            const mockFlights = generateMockFlights(fromIata, toIata, date);
+            currentFlights = mockFlights;
+            currentFrom = from;
+            currentTo = to;
+            currentDate = date;
+            currentClass = travelClass;
+            displayFlights(mockFlights, from, to, date, travelClass);
+        }
+
+        function formatTime(isoString) {
+            const date = new Date(isoString);
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function getIataCode(city) {
+            const cityMap = {
+                "New Delhi": "DEL",
+                "Mumbai": "BOM",
+                "Bangalore": "BLR",
+                "Chennai": "MAA",
+                "Hyderabad": "HYD",
+                "Kolkata": "CCU",
+                "Ahmedabad": "AMD",
+                "Pune": "PNQ",
+                "Jaipur": "JAI",
+                "Surat": "STV",
+                "Lucknow": "LKO",
+                "Patna": "PAT",
+                "Indore": "IDR"
+            };
+            return cityMap[city] || "DEL";
+        }
+
+        function redirectToDetails(flightNumber, price, airlineName, airlineLogo, depTime, arrTime, duration, from, to, date, travelClass) {
+            // Encode parameters for URL
+            const params = new URLSearchParams();
+            params.append('flightNumber', flightNumber);
+            params.append('price', price);
+            params.append('airlineName', airlineName);
+            params.append('airlineLogo', airlineLogo);
+            params.append('depTime', depTime);
+            params.append('arrTime', arrTime);
+            params.append('duration', duration);
+            params.append('from', from);
+            params.append('to', to);
+            params.append('date', date);
+            params.append('class', travelClass);
+            
+            // Redirect to details.html with parameters
+            window.location.href = `details.html?${params.toString()}`;
+        }
+    </script>
+</body>
+</html>

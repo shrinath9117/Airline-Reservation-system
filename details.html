@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fare Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 5px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .close {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .fare-box {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            text-align: left;
+            background: #fff;
+        }
+
+        .fare-box h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .fare-box p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .fare-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .lock-btn, .book-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .lock-btn {
+            background: white;
+            border: 2px solid #007bff;
+            color: #007bff;
+        }
+
+        .lock-btn:hover {
+            background: #007bff;
+            color: white;
+        }
+
+        .book-btn {
+            background: #007bff;
+            color: white;
+        }
+
+        .book-btn:hover {
+            background: #0056b3;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Flight Details</h1>
+    <button class="btn" onclick="openModal()">View Fare Options</button>
+</div>
+
+<!-- Modal -->
+<div class="modal" id="fareModal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>Fare Options for Your Trip</h2>
+
+        <!-- Fare Option 1 -->
+        <div class="fare-box">
+            <h3>₹ 7,570 per adult - SPICESAVER</h3>
+            <p><strong>Baggage:</strong> 7 Kgs Cabin + 15 Kgs Check-in</p>
+            <p><strong>Flexibility:</strong> Cancellation fee ₹3,200</p>
+            <div class="fare-buttons">
+                <button class="lock-btn">LOCK NOW</button>
+                <button class="book-btn">BOOK NOW</button>
+            </div>
+        </div>
+
+        <!-- Fare Option 2 -->
+        <div class="fare-box">
+            <h3>₹ 8,096 per adult - SPICEFLEX</h3>
+            <p><strong>Baggage:</strong> 7 Kgs Cabin + 15 Kgs Check-in</p>
+            <p><strong>Seats:</strong> Free Seats, Complimentary Meals</p>
+            <div class="fare-buttons">
+                <button class="lock-btn">LOCK NOW</button>
+                <button class="book-btn">BOOK NOW</button>
+            </div>
+        </div>
+
+        <!-- Fare Option 3 -->
+        <div class="fare-box">
+            <h3>₹ 8,882 per adult - SPICEMAX</h3>
+            <p><strong>Baggage:</strong> 7 Kgs Cabin + 15 Kgs Check-in</p>
+            <p><strong>Exclusive Benefits:</strong> Extra Legroom, Priority Check-in</p>
+            <div class="fare-buttons">
+                <button class="lock-btn">LOCK NOW</button>
+                <button class="book-btn">BOOK NOW</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function openModal() {
+        document.getElementById("fareModal").style.display = "flex";
+    }
+
+    function closeModal() {
+        document.getElementById("fareModal").style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        let modal = document.getElementById("fareModal");
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+
+</body>
+</html>

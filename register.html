@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airline Registration</title>
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: url('background.jpg') no-repeat center center fixed;
+        background-size: cover;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .container {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 12px; /* Reduced padding */
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        width: 380px; /* Adjusted width */
+        box-sizing: border-box;
+        backdrop-filter: blur(10px);
+        text-align: center;
+    }
+
+    h2 {
+        color: white;
+        font-size: 18px; /* Reduced size */
+        margin-bottom: 8px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    label {
+        margin-top: 6px;
+        font-size: 13px; /* Reduced font size */
+        color: rgb(7, 7, 157);
+        align-self: flex-start;
+    }
+
+    input, select {
+        padding: 6px; /* Reduced padding */
+        margin-top: 3px;
+        border: none; /* Removed border */
+        border-radius: 5px;
+        width: 100%;
+        font-size: 13px;
+        background: rgba(255, 255, 255, 0.3);
+        outline: none; /* Removed focus outline */
+    }
+
+    .password-container {
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+
+    button {
+        margin-top: 10px; /* Reduced margin */
+        padding: 7px;
+        background: rgba(0, 123, 255, 0.8);
+        color: white;
+        border: none; /* Removed border */
+        border-radius: 5px;
+        font-size: 13px;
+        width: 100%;
+        cursor: pointer;
+    }
+
+    .login-link {
+        margin-top: 6px;
+        font-size: 13px;
+        color: white;
+    }
+
+    .login-link a {
+        color: yellow;
+        font-weight: bold;
+    }
+
+</style>
+<body>
+    <div class="container">
+        <h2>Airline Reservation - Register</h2>
+        <form action="#" method="POST">
+            <label for="fullName">Full Name:</label>
+            <input type="text" id="fullName" name="fullName" required>
+            
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" name="phone" required>
+            
+            <label for="dob">Date of Birth:</label>
+            <input type="date" id="dob" name="dob" required>
+            
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender" required>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+            </select>
+          
+            <label for="password">Password:</label>
+            <div class="password-container">
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <label for="confirmPassword">Confirm Password:</label>
+            <div class="password-container">
+                <input type="password" id="confirmPassword" name="confirmPassword" required>
+            </div>
+            
+            <button type="submit">Register</button>
+
+            <p class="login-link">I have an account? <a href="login.html">Login</a></p>
+        </form>
+    </div>
+</body>
+</html>
